@@ -6,7 +6,6 @@ typedef struct song{
     char* Name;
     char* artist;
     int duration;
-    char* album;
     struct song* next;
 }song;
 

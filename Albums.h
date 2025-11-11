@@ -3,7 +3,6 @@
 
 typedef struct album{
     char* name;
-    int number_of_songs;
     int album_id;
     struct playlist_song* first_song;
     struct album* next;

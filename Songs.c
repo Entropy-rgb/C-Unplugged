@@ -15,14 +15,14 @@ void load_all_saved_songs()
     int id, duration;
     char *name = (char *)malloc(sizeof(char) * 50);
     char *artist = (char *)malloc(sizeof(char) * 50);
-    char *album = (char *)malloc(sizeof(char) * 50);
+    // char *album = (char *)malloc(sizeof(char) * 50);
     FILE *fp = fopen("data/songs.txt", "r");
     if (fp == NULL)
     {
         printf("%sERROR OPENING SAVED FILE%s\n", RED, RESET);
         return;
     }
-    while (fscanf(fp, "ID=%d | Name=%s | Artist=%s | Album=%s | Duration:%d\n", &id, name, artist, album, &duration) == 5)
+    while (fscanf(fp, "ID=%d | Name=%s | Artist=%s | Duration:%d\n", &id, name, artist, &duration) == 4)
     {
         song *temp = head;
         if (head == NULL)
@@ -30,7 +30,7 @@ void load_all_saved_songs()
             head = (song *)malloc(sizeof(song));
             head->Name = strdup(name);
             head->artist = strdup(artist);
-            head->album = strdup(album);
+            // head->album = strdup(album);
             head->id = id;
             head->duration = duration;
             head->next = NULL;
@@ -44,7 +44,7 @@ void load_all_saved_songs()
             song *newsong = (song *)malloc(sizeof(song));
             newsong->Name = strdup(name);
             newsong->artist = strdup(artist);
-            newsong->album = strdup(album);
+            // newsong->album = strdup(album);
             newsong->id = id;
             newsong->duration = duration;
             newsong->next = NULL;
@@ -69,7 +69,11 @@ void song_menu()
                "3) Play a song\n"
                "4) Return to Home Menu\n\n%s",
                GREEN, RESET, WHITE, RESET, YELLOW, RESET);
-        scanf("%d", &userInput);
+        if(scanf("%d", &userInput)!=1){
+            while(getchar()!='\n');
+            printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
+            continue; 
+        }
         if (userInput == 1)
         {
             add_song();
@@ -83,7 +87,7 @@ void song_menu()
         else if (userInput == 3)
         {
             list_all_saved_songs();
-            printf("\nEnter the ID of song you want to play:\n");
+            printf("%s\nEnter the ID of song you want to play:\n%s",YELLOW,RESET);
             int a;
             scanf("%d", &a);
             playSong(a);
@@ -95,7 +99,7 @@ void song_menu()
         }
         else
         {
-            printf("%sInvalid Input Displaying Menu Again%s", RED, RESET);
+            printf("%sInvalid Input Displaying Menu Again\n%s", RED, RESET);
             song_menu();
         }
     }
@@ -109,17 +113,17 @@ void add_song()
     fclose(log_fp);
     char songName[50];
     disclaimer();
-    printf("Enter Song Name : ");
+    printf("%sEnter Song Name : %s",GREEN,RESET);
     scanf("%s", songName);
     FILE *fp = fopen("data/songs.txt", "a");
-    printf("Enter Artist Name : ");
+    printf("%sEnter Artist Name : %s",GREEN,RESET);
     char ArtistName[50];
     scanf("%s", ArtistName);
-    printf("Enter Album to save in : ");
-    char AlbumName[50];
-    scanf("%s", AlbumName);
+    // printf("%sEnter Album to save in : %s",GREEN,RESET);
+    // char AlbumName[50];
+    // scanf("%s", AlbumName);
     int duration;
-    printf("Enter Duration of song in seconds : ");
+    printf("%sEnter Duration of song in seconds : %s",GREEN,RESET);
     scanf("%d", &duration);
     song *temp = head;
     if (temp == NULL)
@@ -129,9 +133,9 @@ void add_song()
         head->next = NULL;
         head->Name = strdup(songName);
         head->artist = strdup(ArtistName);
-        head->album = strdup(AlbumName);
+        // head->album = strdup(AlbumName);
         head->duration = duration;
-        fprintf(fp, "ID=%d | Name=%s | Artist=%s | Album=%s | Duration:%d\n", head->id, songName, ArtistName, AlbumName, duration);
+        fprintf(fp, "ID=%d | Name=%s | Artist=%s | Duration:%d\n", head->id, songName, ArtistName, duration);
         fclose(fp);
         return;
     }
@@ -142,12 +146,12 @@ void add_song()
     song *newSong = (song *)malloc(sizeof(song));
     newSong->Name = strdup(songName);
     newSong->artist = strdup(ArtistName);
-    newSong->album = strdup(AlbumName);
+    // newSong->album = strdup(AlbumName);
     newSong->id = temp->id + 1;
     newSong->next = NULL;
     newSong->duration = duration;
     temp->next = newSong;
-    fprintf(fp, "ID=%d | Name=%s | Artist=%s | Album=%s | Duration:%d\n", newSong->id, songName, ArtistName, AlbumName, duration);
+    fprintf(fp, "ID=%d | Name=%s | Artist=%s | Duration:%d\n", newSong->id, songName, ArtistName, duration);
     fclose(fp);
 }
 

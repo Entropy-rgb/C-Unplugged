@@ -49,7 +49,11 @@ int home_menu()
            "%s4) History (Revealing your secrets......)%s\n"
            "%s5) Quit (to not listen to me anymore :( )%s\n",
            GREEN, RESET, WHITE, RESET, RED, RESET, YELLOW, RESET, YELLOW, RESET, YELLOW, RESET, YELLOW, RESET, YELLOW, RESET);
-    scanf("%d", &userInput);
+    if(scanf("%d", &userInput)!=1){
+            while(getchar()!='\n');
+            printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
+            home_menu();
+    }
     if (userInput == 5)
     {
         FILE *log_fp = fopen("log.txt", "a");
@@ -90,7 +94,9 @@ int main()
     fprintf(fp, "APPLICATION STARTED\n");
     fclose(fp);
     load_all_saved_songs();
+    // printf("loaded all songs correctly\n");
     load_all_saved_albums();
+    // printf("loaded all albums correctly\n");
     home_menu();
     return 0;
 }

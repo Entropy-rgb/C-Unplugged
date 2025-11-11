@@ -66,7 +66,7 @@ void remove_last_song_from_playlist()
     fclose(log_fp);
     if (playlist_head == NULL)
     {
-        printf("%sTHE PLAYLIST IS ALREADY EMPTY%s", RED, RESET);
+        printf("%sTHE PLAYLIST IS ALREADY EMPTY\n%s", RED, RESET);
         return;
     }
     playlist_song *temp = playlist_head->prev;
@@ -90,10 +90,16 @@ void playlist_menu()
            "6) Return back to Home Menu\n%s",
            GREEN, RED, RESET, YELLOW, RESET);
     int a;
-    scanf("%d", &a);
+    if(scanf("%d", &a)!=1){
+            while(getchar()!='\n');
+            printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
+            playlist_menu();
+            return; 
+    }
     if (a == 1)
     {
         playlist_head = NULL;
+        printf("%sNew Playlist Created, Previous playlist dumped ( if any )\n%s", RED, RESET);
         playlist_menu();
     }
     else if (a == 2)
@@ -118,7 +124,7 @@ void playlist_menu()
     else if (a == 5)
     {
         display_all_albums();
-        printf("Enter ALBUM_ID to be added to the playlist\n");
+        printf("%sEnter ALBUM_ID to be added to the playlist\n%s",GREEN,RESET);
         int id;
         scanf("%d", &id);
         add_album_to_playlist(id);
@@ -158,7 +164,7 @@ int add_song_to_current_playlist(int id)
         playlist_head->id = temp->id;
         playlist_head->Name = strdup(temp->Name);
         playlist_head->artist = strdup(temp->artist);
-        playlist_head->album = strdup(temp->album);
+        // playlist_head->album = strdup(temp->album);
         playlist_head->duration = temp->duration;
         playlist_head->next = playlist_head;
         playlist_head->prev = playlist_head;
@@ -174,7 +180,7 @@ int add_song_to_current_playlist(int id)
         new->id = temp->id;
         new->Name = strdup(temp->Name);
         new->artist = strdup(temp->artist);
-        new->album = strdup(temp->album);
+        // new->album = strdup(temp->album);
         new->duration = temp->duration;
         new->next = playlist_head;
         new->prev = playlist_temp;
