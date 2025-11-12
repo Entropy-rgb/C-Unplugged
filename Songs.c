@@ -20,6 +20,8 @@ void load_all_saved_songs()
     if (fp == NULL)
     {
         printf("%sERROR OPENING SAVED FILE%s\n", RED, RESET);
+        free(name);
+        free(artist);
         return;
     }
     while (fscanf(fp, "ID=%d | Name=%s | Artist=%s | Duration:%d\n", &id, name, artist, &duration) == 4)
@@ -51,6 +53,8 @@ void load_all_saved_songs()
             temp->next = newsong;
         }
     }
+    free(name);
+    free(artist);
     return;
 }
 
@@ -167,6 +171,7 @@ void list_all_saved_songs()
     while (c != EOF)
     {
         printf("%c", c);
+        // wait_one_second(1000);
         c = fgetc(fp);
     }
     printf("%s\n\n", WHITE);
@@ -183,6 +188,10 @@ void playSong(int id)
     while (temp != NULL && temp->id != id)
     {
         temp = temp->next;
+    }
+    if(temp == NULL){
+        printf("%sSONG NOT FOUND%s", RED, RESET);
+        return;
     }
     if (temp->id == id)
     {

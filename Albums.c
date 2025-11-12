@@ -278,10 +278,10 @@ void remove_song_from_album(int song_id, int album_id)
     album *temp = albums_head;
     while (temp != NULL && temp->album_id != album_id)
         temp = temp->next;
-    if (temp == NULL)
+    if (temp == NULL)   
     {
         printf("%sError : Specified Album Not found%s\n", RED, RESET);
-        return;
+        album_menu();
     }
     playlist_song *song_temp = temp->first_song;
     playlist_song *song_prev = NULL;

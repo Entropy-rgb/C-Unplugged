@@ -44,3 +44,45 @@ playlist_song* Clone_album_songs(playlist_song* head){
     }
     return head_copy;
 }
+
+void advertisement() {
+    printf("%s",GREEN);
+    printf("\n ============================================ \n");
+    printf("           PREMIUM ADVERTISEMENT  \n");
+    printf(" ============================================ \n\n");
+    printf("%s",PINK);
+    wait_one_second();
+    printf(" Hey there, music lover!\n");
+    wait_one_second();
+    printf("Ever got interrupted in the middle of your favorite track? \n");
+    wait_one_second();
+    wait_one_second();
+    printf("Well... get ready to be interrupted *again* \n\n");
+    wait_one_second();
+    printf("%s",YELLOW);
+    printf("But hey! With Premium, you can:\n");
+    wait_one_second();
+    wait_one_second();
+    printf(" 1)  Skip unlimited songs!\n");
+    wait_one_second();
+    printf(" 2)  Listen offline while pretending to study!\n");
+    wait_one_second();
+    printf(" 3)  Enjoy 0%% ads and 100%% bad decisions!\n\n");
+    wait_one_second();
+    printf("So what are you waiting for?\n");
+    wait_one_second();
+    wait_one_second();
+    printf("Upgrade now for only ₹6.9/month!* \n");
+    wait_one_second();
+    wait_one_second();
+    printf("%s",RED);
+    printf("*Just kidding. You're broke. Continue listening to ads.\n");
+    wait_one_second();
+    wait_one_second();
+    wait_one_second();
+    printf("%s",GREEN);
+    printf("\n ============================================ \n");
+    printf("        END OF AD - Back to your music \n");
+    printf(" ============================================ \n\n");
+    printf("%s",RESET);
+}

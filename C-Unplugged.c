@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "Albums.h"
 #include "Logging.h"
 #include "Playlist.h"
 #include "Songs.h"
 #include "C-Unplugged.h"
+#include "Utils.h"
 
 char *YELLOW = "\033[1;33m";
 char *RESET = "\033[0m";
@@ -97,6 +99,7 @@ int main()
     // printf("loaded all songs correctly\n");
     load_all_saved_albums();
     // printf("loaded all albums correctly\n");
+    advertisement();
     home_menu();
     return 0;
 }
