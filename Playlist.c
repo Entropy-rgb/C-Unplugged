@@ -69,7 +69,7 @@ void remove_last_song_from_playlist()
         printf("%sTHE PLAYLIST IS ALREADY EMPTY\n%s", RED, RESET);
         return;
     }
-    if(playlist_head->next = playlist_head){
+    if(playlist_head->next == playlist_head){
         playlist_head = NULL;
         return;
     }
