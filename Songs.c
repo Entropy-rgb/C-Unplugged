@@ -22,6 +22,7 @@ void load_all_saved_songs()
         printf("%sERROR OPENING SAVED FILE%s\n", RED, RESET);
         free(name);
         free(artist);
+        fclose(fp);
         return;
     }
     while (fscanf(fp, "ID=%d | Name=%s | Artist=%s | Duration:%d\n", &id, name, artist, &duration) == 4)
@@ -53,6 +54,7 @@ void load_all_saved_songs()
             temp->next = newsong;
         }
     }
+    fclose(fp);
     free(name);
     free(artist);
     return;
@@ -166,7 +168,7 @@ void list_all_saved_songs()
     fclose(log_fp);
     printf("%sTHIS IS THE LIST OF ALL SONGS\n\n%s", RED, RESET);
     FILE *fp = fopen("data/songs.txt", "r");
-    char c;
+    char c = 0;
     printf("%s", WHITE);
     while (c != EOF)
     {
@@ -190,7 +192,7 @@ void playSong(int id)
         temp = temp->next;
     }
     if(temp == NULL){
-        printf("%sSONG NOT FOUND%s", RED, RESET);
+        printf("%sSONG NOT FOUND\n%s", RED, RESET);
         return;
     }
     if (temp->id == id)
@@ -199,6 +201,6 @@ void playSong(int id)
     }
     else
     {
-        printf("%sSONG NOT FOUND%s", RED, RESET);
+        printf("%sSONG NOT FOUND\n%s", RED, RESET);
     }
 }

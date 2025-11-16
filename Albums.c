@@ -194,6 +194,9 @@ void add_album_to_playlist(int id)
         playlist_song *duplicate = Clone_album_songs(temp->first_song);
         playlist_head = duplicate;
         playlist_song *tail = duplicate;
+        if(tail == NULL){
+            return;
+        }
         while (tail->next != NULL)
             tail = tail->next;
         tail->next = duplicate;

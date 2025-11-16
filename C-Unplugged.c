@@ -61,6 +61,7 @@ int home_menu()
         FILE *log_fp = fopen("log.txt", "a");
         fprintf(log_fp, "EXIT PROGRAM\n");
         fclose(log_fp);
+        free_everything();
         exit(EXIT_SUCCESS);
     }
     if (userInput == 4)

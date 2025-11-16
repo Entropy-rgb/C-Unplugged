@@ -86,3 +86,11 @@ void advertisement() {
     printf(" ============================================ \n\n");
     printf("%s",RESET);
 }
+
+void free_everything(){
+    // pending work here;
+    // free playlist
+    // free songs
+    // free albums
+    
+}

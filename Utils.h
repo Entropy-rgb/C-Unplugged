@@ -4,5 +4,5 @@
 
 playlist_song* Clone_album_songs(playlist_song* head);
 void advertisement();
-
+void free_everything();
 #endif
