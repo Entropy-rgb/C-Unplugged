@@ -14,14 +14,14 @@ void display_history()
     {
         return;
     }
-    printf("%s",WHITE);
+    printf("%s", WHITE);
     while (c != EOF)
     {
         printf("%c", c);
         c = fgetc(fp);
     }
     printf("\n");
-    printf("%s",RESET);
+    printf("%s", RESET);
     fclose(fp);
     home_menu();
 }
@@ -31,7 +31,7 @@ void write_to_history(char *string_to_write)
     FILE *fp = fopen("log.txt", "a");
     if (fp == NULL)
     {
-        printf("%sUNABLE TO OPEN LOG FILE TO UPDATE LOGS\n%s",RED,RESET);
+        printf("%sUNABLE TO OPEN LOG FILE TO UPDATE LOGS\n%s", RED, RESET);
         return;
     }
     fputs(string_to_write, fp);

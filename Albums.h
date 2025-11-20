@@ -1,14 +1,15 @@
 #ifndef ALBUMS_H
 #define ALBUMS_H
 
-typedef struct album{
-    char* name;
+typedef struct album
+{
+    char *name;
     int album_id;
-    struct playlist_song* first_song;
-    struct album* next;
-}album;
+    struct playlist_song *first_song;
+    struct album *next;
+} album;
 
-extern album* albums_head;
+extern album *albums_head;
 
 void create_new_album();
 void display_album_songs(int album_id);
@@ -20,5 +21,7 @@ void display_all_albums();
 void album_menu();
 void load_all_saved_albums();
 void save_all_albums_to_file();
+int get_album_id_by_serial(int serial);
+int get_song_id_from_album_by_serial(int album_id, int serial);
 
 #endif

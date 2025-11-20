@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include "Utils.h"
 #include "C-Unplugged.h"
 #include "Songs.h"
@@ -58,12 +59,12 @@ void load_all_saved_albums()
         if (strncmp(line_buffer, "#AlbumName:", 11) == 0)
         {
             album *newAlbum = malloc(sizeof(album));
-            newAlbum->name = malloc(100);
+            newAlbum->name = NULL;
             newAlbum->first_song = NULL;
             newAlbum->next = NULL;
-
-            sscanf(line_buffer, "#AlbumName: %s #AlbumId=%d", newAlbum->name, &newAlbum->album_id);
-
+            char temp_name[100];
+            sscanf(line_buffer, "#AlbumName: %s #AlbumId=%d", temp_name, &newAlbum->album_id);
+            newAlbum->name = strdup(temp_name);
             if (albums_head == NULL)
             {
                 albums_head = newAlbum;
@@ -168,9 +169,11 @@ void display_album_songs(int album_id)
     else
     {
         playlist_song *songs = temp->first_song;
+        int serial = 1;
         while (songs != NULL)
         {
-            printf("%sSongID = %d Song Name : %s\n%s", WHITE, songs->id, songs->Name, RESET);
+            printf("%sSerial = %d | Song Name : %s\n%s", WHITE, serial, songs->Name, RESET);
+            serial++;
             songs = songs->next;
         }
     }
@@ -194,7 +197,8 @@ void add_album_to_playlist(int id)
         playlist_song *duplicate = Clone_album_songs(temp->first_song);
         playlist_head = duplicate;
         playlist_song *tail = duplicate;
-        if(tail == NULL){
+        if (tail == NULL)
+        {
             return;
         }
         while (tail->next != NULL)
@@ -221,9 +225,11 @@ void display_all_albums()
     fprintf(log_fp, "USER DISPLAYED ALL ALBUMS\n");
     fclose(log_fp);
     album *temp = albums_head;
+    int serial = 1;
     while (temp != NULL)
     {
-        printf("%s#AlbumID = %d #AlbumName = %s\n%s", WHITE, temp->album_id, temp->name, RESET);
+        printf("%sSerial = %d | AlbumName = %s\n%s", WHITE, serial, temp->name, RESET);
+        serial++;
         temp = temp->next;
     }
 }
@@ -281,7 +287,7 @@ void remove_song_from_album(int song_id, int album_id)
     album *temp = albums_head;
     while (temp != NULL && temp->album_id != album_id)
         temp = temp->next;
-    if (temp == NULL)   
+    if (temp == NULL)
     {
         printf("%sError : Specified Album Not found%s\n", RED, RESET);
         album_menu();
@@ -339,6 +345,16 @@ void delete_album(int album_id)
     if (temp->album_id == album_id)
     {
         albums_head = temp->next;
+        playlist_song *song = temp->first_song;
+        while (song != NULL)
+        {
+            playlist_song *next = song->next;
+            free(song->Name);
+            free(song->artist);
+            free(song);
+            song = next;
+        }
+        free(temp->name);
         free(temp);
         save_all_albums_to_file();
         return;
@@ -355,6 +371,15 @@ void delete_album(int album_id)
         return;
     }
     prev->next = temp->next;
+    playlist_song *song = temp->first_song;
+    while (song != NULL)
+    {
+        playlist_song *next = song->next;
+        free(song->Name);
+        free(song->artist);
+        free(song);
+        song = next;
+    }
     free(temp->name);
     free(temp);
     save_all_albums_to_file();
@@ -395,43 +420,89 @@ void album_menu()
     else if (a == 3)
     {
         display_all_albums();
-        int id;
-        printf("\n%sEnter the ALBUM_ID of the album you would like to see the songs of : \n%s", GREEN, RESET);
-        scanf("%d", &id);
-        display_album_songs(id);
+        int serial;
+        printf("\n%sEnter the Serial Number of the album you would like to see the songs of : \n%s", GREEN, RESET);
+        scanf("%d", &serial);
+        int album_id = get_album_id_by_serial(serial);
+        if (album_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+        }
+        else
+        {
+            display_album_songs(album_id);
+        }
         album_menu();
     }
     else if (a == 4)
     {
         display_all_albums();
-        int id, Album_id;
-        printf("\n%sEnter the ALBUM_ID of the album you would like to add a song to : \n%s", GREEN, RESET);
-        scanf("%d", &Album_id);
+        int serial, Album_id;
+        printf("\n%sEnter the Serial Number of the album you would like to add a song to : \n%s", GREEN, RESET);
+        scanf("%d", &serial);
+        Album_id = get_album_id_by_serial(serial);
+        if (Album_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+            album_menu();
+            return;
+        }
         list_all_saved_songs();
-        printf("\n%sEnter the ID of the song you would like to add to the selected album : \n%s", GREEN, RESET);
-        scanf("%d", &id);
-        add_song_to_album(id, Album_id);
+        printf("\n%sEnter the Serial Number of the song you would like to add to the selected album : \n%s", GREEN, RESET);
+        scanf("%d", &serial);
+        int song_id = get_song_id_by_serial(serial);
+        if (song_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+        }
+        else
+        {
+            add_song_to_album(song_id, Album_id);
+        }
         album_menu();
     }
     else if (a == 5)
     {
         display_all_albums();
-        int id, Album_id;
-        printf("\n%sEnter the ALBUM_ID of the album you would like to remove a song from : \n%s", GREEN, RESET);
-        scanf("%d", &Album_id);
+        int serial, Album_id;
+        printf("\n%sEnter the Serial Number of the album you would like to remove a song from : \n%s", GREEN, RESET);
+        scanf("%d", &serial);
+        Album_id = get_album_id_by_serial(serial);
+        if (Album_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+            album_menu();
+            return;
+        }
         display_album_songs(Album_id);
-        printf("\n%sEnter the ID of the song you would like to delete from the album : \n%s", GREEN, RESET);
-        scanf("%d", &id);
-        remove_song_from_album(id, Album_id);
+        printf("\n%sEnter the Serial Number of the song you would like to delete from the album : \n%s", GREEN, RESET);
+        scanf("%d", &serial);
+        int song_id = get_song_id_from_album_by_serial(Album_id, serial);
+        if (song_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+        }
+        else
+        {
+            remove_song_from_album(song_id, Album_id);
+        }
         album_menu();
     }
     else if (a == 6)
     {
         display_all_albums();
-        printf("%sEnter ALBUM_ID of the album you would like to delete :\n%s", GREEN, RESET);
-        int id;
-        scanf("%d", &id);
-        delete_album(id);
+        printf("%sEnter Serial Number of the album you would like to delete :\n%s", GREEN, RESET);
+        int serial;
+        scanf("%d", &serial);
+        int album_id = get_album_id_by_serial(serial);
+        if (album_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+        }
+        else
+        {
+            delete_album(album_id);
+        }
         album_menu();
     }
     else if (a == 7)
@@ -443,4 +514,44 @@ void album_menu()
         printf("%sInvalid Input, displaying album menu again\n%s", RED, RESET);
         album_menu();
     }
+}
+
+int get_album_id_by_serial(int serial)
+{
+    album *temp = albums_head;
+    int count = 1;
+    while (temp != NULL)
+    {
+        if (count == serial)
+        {
+            return temp->album_id;
+        }
+        count++;
+        temp = temp->next;
+    }
+    return -1; // Invalid serial
+}
+
+int get_song_id_from_album_by_serial(int album_id, int serial)
+{
+    album *temp = albums_head;
+    while (temp != NULL && temp->album_id != album_id)
+    {
+        temp = temp->next;
+    }
+    if (temp == NULL)
+        return -1;
+
+    playlist_song *song = temp->first_song;
+    int count = 1;
+    while (song != NULL)
+    {
+        if (count == serial)
+        {
+            return song->id;
+        }
+        count++;
+        song = song->next;
+    }
+    return -1; // Invalid serial
 }

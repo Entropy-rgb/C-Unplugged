@@ -69,13 +69,19 @@ void remove_last_song_from_playlist()
         printf("%sTHE PLAYLIST IS ALREADY EMPTY\n%s", RED, RESET);
         return;
     }
-    if(playlist_head->next == playlist_head){
+    if (playlist_head->next == playlist_head)
+    {
+        free(playlist_head->Name);
+        free(playlist_head->artist);
+        free(playlist_head);
         playlist_head = NULL;
         return;
     }
     playlist_song *temp = playlist_head->prev;
     playlist_head->prev->prev->next = playlist_head;
     playlist_head->prev = playlist_head->prev->prev;
+    free(temp->Name);
+    free(temp->artist);
     free(temp);
 }
 
@@ -94,14 +100,37 @@ void playlist_menu()
            "6) Return back to Home Menu\n%s",
            GREEN, RED, RESET, YELLOW, RESET);
     int a;
-    if(scanf("%d", &a)!=1){
-            while(getchar()!='\n');
-            printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
-            playlist_menu();
-            return; 
+    if (scanf("%d", &a) != 1)
+    {
+        while (getchar() != '\n')
+            ;
+        printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
+        playlist_menu();
+        return;
     }
     if (a == 1)
     {
+        if (playlist_head != NULL)
+        {
+            playlist_song *current = playlist_head;
+            playlist_song *first = playlist_head;
+
+            if (playlist_head->prev)
+            {
+                playlist_head->prev->next = NULL;
+            }
+
+            while (current != NULL)
+            {
+                playlist_song *next = current->next;
+                free(current->Name);
+                free(current->artist);
+                free(current);
+                if (next == first)
+                    break;
+                current = next;
+            }
+        }
         playlist_head = NULL;
         printf("%sNew Playlist Created, Previous playlist dumped ( if any )\n%s", RED, RESET);
         playlist_menu();
@@ -109,10 +138,18 @@ void playlist_menu()
     else if (a == 2)
     {
         list_all_saved_songs();
-        printf("%sEnter the ID of song to add to the current playlist : \n%s", GREEN, RESET);
-        int id;
-        scanf("%d", &id);
-        add_song_to_current_playlist(id);
+        printf("%sEnter the Serial Number of song to add to the current playlist : \n%s", GREEN, RESET);
+        int serial;
+        scanf("%d", &serial);
+        int song_id = get_song_id_by_serial(serial);
+        if (song_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+        }
+        else
+        {
+            add_song_to_current_playlist(song_id);
+        }
         playlist_menu();
     }
     else if (a == 3)
@@ -128,10 +165,18 @@ void playlist_menu()
     else if (a == 5)
     {
         display_all_albums();
-        printf("%sEnter ALBUM_ID to be added to the playlist\n%s",GREEN,RESET);
-        int id;
-        scanf("%d", &id);
-        add_album_to_playlist(id);
+        printf("%sEnter Serial Number of the album to be added to the playlist\n%s", GREEN, RESET);
+        int serial;
+        scanf("%d", &serial);
+        int album_id = get_album_id_by_serial(serial);
+        if (album_id == -1)
+        {
+            printf("%sInvalid serial number!\n%s", RED, RESET);
+        }
+        else
+        {
+            add_album_to_playlist(album_id);
+        }
         playlist_menu();
     }
     else if (a == 6)

@@ -75,10 +75,12 @@ void song_menu()
                "3) Play a song\n"
                "4) Return to Home Menu\n\n%s",
                GREEN, RESET, WHITE, RESET, YELLOW, RESET);
-        if(scanf("%d", &userInput)!=1){
-            while(getchar()!='\n');
+        if (scanf("%d", &userInput) != 1)
+        {
+            while (getchar() != '\n')
+                ;
             printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
-            continue; 
+            continue;
         }
         if (userInput == 1)
         {
@@ -93,10 +95,18 @@ void song_menu()
         else if (userInput == 3)
         {
             list_all_saved_songs();
-            printf("%s\nEnter the ID of song you want to play:\n%s",YELLOW,RESET);
-            int a;
-            scanf("%d", &a);
-            playSong(a);
+            printf("%s\nEnter the Serial Number of song you want to play:\n%s", YELLOW, RESET);
+            int serial;
+            scanf("%d", &serial);
+            int song_id = get_song_id_by_serial(serial);
+            if (song_id == -1)
+            {
+                printf("%sInvalid serial number!\n%s", RED, RESET);
+            }
+            else
+            {
+                playSong(song_id);
+            }
         }
         else if (userInput == 4)
         {
@@ -119,17 +129,17 @@ void add_song()
     fclose(log_fp);
     char songName[50];
     disclaimer();
-    printf("%sEnter Song Name : %s",GREEN,RESET);
+    printf("%sEnter Song Name : %s", GREEN, RESET);
     scanf("%s", songName);
     FILE *fp = fopen("data/songs.txt", "a");
-    printf("%sEnter Artist Name : %s",GREEN,RESET);
+    printf("%sEnter Artist Name : %s", GREEN, RESET);
     char ArtistName[50];
     scanf("%s", ArtistName);
     // printf("%sEnter Album to save in : %s",GREEN,RESET);
     // char AlbumName[50];
     // scanf("%s", AlbumName);
     int duration;
-    printf("%sEnter Duration of song in seconds : %s",GREEN,RESET);
+    printf("%sEnter Duration of song in seconds : %s", GREEN, RESET);
     scanf("%d", &duration);
     song *temp = head;
     if (temp == NULL)
@@ -163,21 +173,38 @@ void add_song()
 
 void list_all_saved_songs()
 {
+    // FILE *log_fp = fopen("log.txt", "a");
+    // fprintf(log_fp, "USER LISTED ALL SAVED SONGS\n");
+    // fclose(log_fp);
+    // printf("%sTHIS IS THE LIST OF ALL SONGS\n\n%s", RED, RESET);
+    // FILE *fp = fopen("data/songs.txt", "r");
+    // char c = 0;
+    // printf("%s", WHITE);
+    // while (c != EOF)
+    // {
+    //     printf("%c", c);
+    //     // wait_one_second(1000);
+    //     c = fgetc(fp);
+    // }
+    // printf("%s\n\n", WHITE);
+    // fclose(fp);
+    // return;
     FILE *log_fp = fopen("log.txt", "a");
     fprintf(log_fp, "USER LISTED ALL SAVED SONGS\n");
     fclose(log_fp);
     printf("%sTHIS IS THE LIST OF ALL SONGS\n\n%s", RED, RESET);
-    FILE *fp = fopen("data/songs.txt", "r");
-    char c = 0;
+
+    song *temp = head;
+    int serial = 1;
     printf("%s", WHITE);
-    while (c != EOF)
+    while (temp != NULL)
     {
-        printf("%c", c);
-        // wait_one_second(1000);
-        c = fgetc(fp);
+        printf("Serial=%d | Name=%s | Artist=%s | Duration:%d\n",
+               serial, temp->Name, temp->artist, temp->duration);
+        serial++;
+        temp = temp->next;
     }
-    printf("%s\n\n", WHITE);
-    fclose(fp);
+    printf("%s\n", RESET);
     return;
 }
 
@@ -191,7 +218,8 @@ void playSong(int id)
     {
         temp = temp->next;
     }
-    if(temp == NULL){
+    if (temp == NULL)
+    {
         printf("%sSONG NOT FOUND\n%s", RED, RESET);
         return;
     }
@@ -205,8 +233,26 @@ void playSong(int id)
     }
 }
 
-void free_song(song *s) {
-    if (!s) return;
+int get_song_id_by_serial(int serial)
+{
+    song *temp = head;
+    int count = 1;
+    while (temp != NULL)
+    {
+        if (count == serial)
+        {
+            return temp->id;
+        }
+        count++;
+        temp = temp->next;
+    }
+    return -1; // Invalid serial
+}
+
+void free_song(song *s)
+{
+    if (!s)
+        return;
     free(s->Name);
     free(s->artist);
     free(s);

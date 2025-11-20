@@ -1,16 +1,17 @@
 #ifndef PLAYLIST_H
 #define PLAYLIST_H
 
-typedef struct playlist_song{
+typedef struct playlist_song
+{
     int id;
-    char* Name;
-    char* artist;
+    char *Name;
+    char *artist;
     int duration;
-    struct playlist_song* next;
-    struct playlist_song* prev;
-}playlist_song;
+    struct playlist_song *next;
+    struct playlist_song *prev;
+} playlist_song;
 
-extern playlist_song* playlist_head;
+extern playlist_song *playlist_head;
 
 void remove_last_song_from_playlist();
 void playlist_menu();

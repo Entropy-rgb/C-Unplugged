@@ -51,10 +51,12 @@ int home_menu()
            "%s4) History (Revealing your secrets......)%s\n"
            "%s5) Quit (to not listen to me anymore :( )%s\n",
            GREEN, RESET, WHITE, RESET, RED, RESET, YELLOW, RESET, YELLOW, RESET, YELLOW, RESET, YELLOW, RESET, YELLOW, RESET);
-    if(scanf("%d", &userInput)!=1){
-            while(getchar()!='\n');
-            printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
-            home_menu();
+    if (scanf("%d", &userInput) != 1)
+    {
+        while (getchar() != '\n')
+            ;
+        printf("%sInvalid input. Please enter a number.%s\n", RED, RESET);
+        home_menu();
     }
     if (userInput == 5)
     {
@@ -89,6 +91,7 @@ int home_menu()
         printf("%sInvalid input, kindly input correctly TA's, I'll display the menu again only for you <3%s\n", RED, RESET);
         home_menu();
     }
+    return 0;
 }
 
 int main()
@@ -100,7 +103,6 @@ int main()
     // printf("loaded all songs correctly\n");
     load_all_saved_albums();
     // printf("loaded all albums correctly\n");
-    advertisement();
     home_menu();
     return 0;
 }

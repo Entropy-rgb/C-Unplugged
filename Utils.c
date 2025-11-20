@@ -7,16 +7,18 @@
 #include "Songs.h"
 #include "C-Unplugged.h"
 
-playlist_song* Clone_album_songs(playlist_song* head){
-    playlist_song* temp = head;
-    if(head==NULL){
+playlist_song *Clone_album_songs(playlist_song *head)
+{
+    playlist_song *temp = head;
+    if (head == NULL)
+    {
         return NULL;
     }
-    playlist_song* head_copy = NULL;
+    playlist_song *head_copy = NULL;
     head_copy = (playlist_song *)malloc(sizeof(playlist_song));
-    head_copy->Name = (char *)malloc(100);
+    // head_copy->Name = (char *)malloc(100);
     // head_copy->album = (char *)malloc(100);
-    head_copy->artist = (char *)malloc(100);
+    // head_copy->artist = (char *)malloc(100);
     head_copy->Name = strdup(temp->Name);
     // head_copy->album = strdup(temp->album);
     head_copy->artist = strdup(temp->artist);
@@ -24,13 +26,14 @@ playlist_song* Clone_album_songs(playlist_song* head){
     head_copy->id = temp->id;
     head_copy->next = NULL;
     head_copy->prev = NULL;
-    playlist_song* temp_copy = head_copy;
+    playlist_song *temp_copy = head_copy;
     temp = temp->next;
-    while(temp != NULL){
-        playlist_song* new_copy = (playlist_song *)malloc(sizeof(playlist_song));
-        new_copy->Name = (char *)malloc(100);
+    while (temp != NULL)
+    {
+        playlist_song *new_copy = (playlist_song *)malloc(sizeof(playlist_song));
+        // new_copy->Name = (char *)malloc(100);
         // new_copy->album = (char *)malloc(100);
-        new_copy->artist = (char *)malloc(100);
+        // new_copy->artist = (char *)malloc(100);
         new_copy->Name = strdup(temp->Name);
         // new_copy->album = strdup(temp->album);
         new_copy->artist = strdup(temp->artist);
@@ -45,52 +48,63 @@ playlist_song* Clone_album_songs(playlist_song* head){
     return head_copy;
 }
 
-void advertisement() {
-    printf("%s",GREEN);
-    printf("\n ============================================ \n");
-    printf("           PREMIUM ADVERTISEMENT  \n");
-    printf(" ============================================ \n\n");
-    printf("%s",PINK);
-    wait_one_second();
-    printf(" Hey there, music lover!\n");
-    wait_one_second();
-    printf("Ever got interrupted in the middle of your favorite track? \n");
-    wait_one_second();
-    wait_one_second();
-    printf("Well... get ready to be interrupted *again* \n\n");
-    wait_one_second();
-    printf("%s",YELLOW);
-    printf("But hey! With Premium, you can:\n");
-    wait_one_second();
-    wait_one_second();
-    printf(" 1)  Skip unlimited songs!\n");
-    wait_one_second();
-    printf(" 2)  Listen offline while pretending to study!\n");
-    wait_one_second();
-    printf(" 3)  Enjoy 0%% ads and 100%% bad decisions!\n\n");
-    wait_one_second();
-    printf("So what are you waiting for?\n");
-    wait_one_second();
-    wait_one_second();
-    printf("Upgrade now for only ₹6.9/month!* \n");
-    wait_one_second();
-    wait_one_second();
-    printf("%s",RED);
-    printf("*Just kidding. You're broke. Continue listening to ads.\n");
-    wait_one_second();
-    wait_one_second();
-    wait_one_second();
-    printf("%s",GREEN);
-    printf("\n ============================================ \n");
-    printf("        END OF AD - Back to your music \n");
-    printf(" ============================================ \n\n");
-    printf("%s",RESET);
+void free_playlist_songs(playlist_song *head)
+{
+    if (head == NULL)
+        return;
+    playlist_song *current = head;
+    playlist_song *first = head;
+    if (head->prev)
+    {
+        head->prev->next = NULL;
+    }
+    while (current != NULL)
+    {
+        playlist_song *next = current->next;
+        free(current->Name);
+        free(current->artist);
+        free(current);
+        if (next == first)
+            break;
+        current = next;
+    }
 }
 
-void free_everything(){
-    // pending work here;
-    // free playlist
-    // free songs
-    // free albums
-    
+void free_album_songs(playlist_song *head)
+{
+    playlist_song *current = head;
+    while (current != NULL)
+    {
+        playlist_song *next = current->next;
+        free(current->Name);
+        free(current->artist);
+        free(current);
+        current = next;
+    }
+}
+
+void free_everything()
+{
+    song *current_song = head;
+    while (current_song != NULL)
+    {
+        song *next = current_song->next;
+        free(current_song->Name);
+        free(current_song->artist);
+        free(current_song);
+        current_song = next;
+    }
+    head = NULL;
+    album *current_album = albums_head;
+    while (current_album != NULL)
+    {
+        album *next = current_album->next;
+        free_album_songs(current_album->first_song);
+        free(current_album->name);
+        free(current_album);
+        current_album = next;
+    }
+    albums_head = NULL;
+    free_playlist_songs(playlist_head);
+    playlist_head = NULL;
 }
