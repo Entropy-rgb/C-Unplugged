@@ -62,7 +62,7 @@ make
 make clean
 
 ```
-## 🛠️ Makefile Commands Reference
+##  Makefile Commands Reference
 
 | Command | Description |
 |---------|-------------|
@@ -78,4 +78,5 @@ make clean
 ---
 
 **End of README**
+
 
