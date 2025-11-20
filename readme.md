@@ -43,17 +43,12 @@ C-Unplugged/
 
 ##  Compilation and Execution
 
-### Initial Setup
-```bash
-# Initialize project structure (creates data directory)
-make init
-```
 
 ### Build the Application
 ```bash
 # Standard build
 make
-
+```
 ### Run the Application
 ```bash
 # Method 1: Direct execution
@@ -83,3 +78,4 @@ make clean
 ---
 
 **End of README**
+
