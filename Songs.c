@@ -204,3 +204,10 @@ void playSong(int id)
         printf("%sSONG NOT FOUND\n%s", RED, RESET);
     }
 }
+
+void free_song(song *s) {
+    if (!s) return;
+    free(s->Name);
+    free(s->artist);
+    free(s);
+}
